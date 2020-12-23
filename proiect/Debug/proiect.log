@@ -1,0 +1,3 @@
+﻿  proiect.cpp
+C:\Users\PC\Desktop\fac an 2\poo\proiect\proiect\proiect.cpp(169,15): warning C4244:  'return': conversion from 'double' to 'int', possible loss of data
+  proiect.vcxproj -> C:\Users\PC\Desktop\fac an 2\poo\proiect\proiect\Debug\proiect.exe

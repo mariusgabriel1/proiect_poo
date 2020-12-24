@@ -10,19 +10,17 @@ private:
 	const int id = nrFilme;
 	static int nrFilme;
 
-	char* titlu;
-	int* oreRulare;
-	int nrOreRulare;
-	
+	char* titlu = nullptr;
+	int* oreRulare = nullptr;
+	int nrOreRulare = 0;
+	int durata = 0;
 
 public:
-	//constructori
 	Film() : id(++nrFilme) {
-		titlu = nullptr;
-		oreRulare = nullptr;
+		
 	}
 
-	Film(char* titlu, int* oreRulare, int nrOreRulare) : Film() {
+	Film(char* titlu, int* oreRulare, int nrOreRulare, int durata) : Film() {
 		char* copieTitlu = new char[strlen(titlu) + 1];
 		strcpy_s(copieTitlu, strlen(titlu) + 1, titlu);
 		this->titlu = copieTitlu;
@@ -35,9 +33,13 @@ public:
 
 		this->oreRulare = copieOreRulare;
 		this->nrOreRulare = nrOreRulare;
-
-
+		this->durata = durata;
 	}
+
+	Film(int durata) : Film() {
+		this->durata = durata;
+	}
+
 
 	Film(const Film& film) {
 		char* titlu = new char[strlen(film.titlu) + 1];
@@ -95,10 +97,9 @@ public:
 		return id;
 	}
 
-	
 
 	char* operator[](int index) {
-		char* titlu = new char[strlen(titlu) + 1];
+		char* titlu = new char[strlen(this->titlu) + 1];
 		strcpy(titlu, this->titlu);
 		return titlu;
 	}
@@ -107,18 +108,22 @@ public:
 		return this->id == film.id;
 	}
 
-	//TODO: - todo
 	Film operator+(Film& film) {
-		Film f;
-		return f;
+		return Film(durata + film.durata);
 	}
 
 	bool operator<=(const Film& film) {
 		return strcmp(this->titlu, film.titlu) < 0;
 	}
 
-	operator int() const {
-		return this->id;
+	operator char*() {
+		char* titlu = new char[strlen(this->titlu) + 1];
+		strcpy(titlu, this->titlu);
+		return titlu;
+	}
+
+	bool operator!() { 
+		return false;
 	}
 
 	friend ostream& operator<<(ostream&, Film&);
@@ -128,13 +133,24 @@ public:
 };
 
 ostream& operator<<(ostream& output, Film& film) {
-	output << "titlu: " << film.titlu << endl;
-	output << "id: " << film.id << endl;
+	output << "Titlu: " << film.titlu << endl;
+	output << "ID: " << film.id << endl;
+	output << "Durata: " << film.durata << endl;
 	return output;
 }
 
 istream& operator>>(istream& input, Film& film) {
-	cout << "Titlu:" << endl;
+	cout << "Titlu: " << endl;
+
+	char buffer[100];
+	input >> ws;
+	input.getline(buffer, 99);
+	film.titlu = new char[strlen(buffer) + 1];
+	strcpy_s(film.titlu, strlen(buffer) + 1, buffer);
+
+	cout << "Durata: " << endl;
+	input >> film.durata;
+
 	return input;
 }
 
@@ -143,27 +159,31 @@ private:
 	const int id = nrBilete;
 	static int nrBilete;
 
-	double pret;
-	int rulareId;
+	double pret = 0;
+	int rulareId = 0;
+	int loc = 0;
 
-	char* titluFilm;
+	char* titluFilm = nullptr;
 
 
 public:
 	Bilet() : id(++nrBilete) {
-		pret = 0;
-		rulareId = 0;
-		titluFilm = nullptr;
+
 	}
 
 
-	Bilet(char* titluFilm, double pret, int rulareId) : Bilet() {
+	Bilet(char* titluFilm, double pret, int rulareId,int loc) : Bilet() {
 		char* copieTitluFilm = new char[strlen(titluFilm) + 1];
 		strcpy(copieTitluFilm, titluFilm);
 		this->titluFilm = copieTitluFilm;
 
 		this->pret = pret;
 		this->rulareId = rulareId;
+		this->loc = loc;
+	}
+
+	Bilet(double pret) : Bilet() {
+		this->pret = pret;
 	}
 
 	Bilet& operator=(const Bilet& bilet)
@@ -179,6 +199,7 @@ public:
 
 		this->pret = bilet.pret;
 		this->rulareId = bilet.rulareId;
+		this->loc = bilet.loc;
 	}
 
 	~Bilet() {
@@ -215,9 +236,18 @@ public:
 		return this->id;
 	}
 
-	//TODO: - todo
-	int operator+(Bilet& bilet) {
-		return pret + bilet.pret;
+	operator char*() {
+		char* titluFilm = new char[strlen(this->titluFilm) + 1];
+		strcpy(titluFilm, this->titluFilm);
+		return titluFilm;
+	}
+
+	bool operator!() {
+		return false;
+	}
+
+	Bilet operator+(Bilet& bilet) {
+		return Bilet(pret + bilet.pret);
 	}
 
 	friend ostream& operator<<(ostream&, Bilet&);
@@ -233,6 +263,14 @@ ostream& operator<<(ostream& output, Bilet& bilet) {
 }
 
 istream& operator>>(istream& input, Bilet& bilet) {
+	cout << "Titlu film: " << endl;
+
+	char buffer[100];
+	input >> ws;
+	input.getline(buffer, 99);
+	bilet.titluFilm = new char[strlen(buffer) + 1];
+	strcpy_s(bilet.titluFilm, strlen(buffer) + 1, buffer);
+
 	cout << "Pret:" << endl;
 	input >> bilet.pret;
 	cout << "Rulare id:" << endl;
@@ -282,10 +320,14 @@ public:
 		return nume;
 	}
 
-	//TODO: - todo
-	Client operator+(Client& client) {
-		Client c;
-		return c;
+	bool operator!() {
+		return false;
+	}
+
+	operator char*() {
+		char* nume = new char[strlen(this->nume) + 1];
+		strcpy(nume, this->nume);
+		return nume;
 	}
 
 	friend ostream& operator<<(ostream&, Client&);
@@ -302,7 +344,13 @@ ostream& operator<<(ostream& output, Client& client) {
 
 istream& operator>>(istream& input, Client& client) {
 	cout << "Nume:";
-	input >> client.nume;
+
+	char buffer[100];
+	input >> ws;
+	input.getline(buffer, 99);
+	client.nume = new char[strlen(buffer) + 1];
+	strcpy_s(client.nume, strlen(buffer) + 1, buffer);
+
 	return input;
 }
 
@@ -312,26 +360,27 @@ private:
 	static int nrSali;
 
 	int capacitateLocuri = 0;
-	int randuri = 0;
-	int coloane = 0;
-	int** dispunereLocuri;
+	int* locuri = nullptr;
 
-	int* locuriOcupate;
+	int* locuriOcupate = nullptr;
 	int nrLocuriOcupate = 0;
 
-	char* nume;
+	char* nume = nullptr;
 
 public:
 	Sala() : id(++nrSali) {
-		dispunereLocuri = nullptr;
-		locuriOcupate = nullptr;
-		nume = nullptr;
+
 	}
 
-	Sala(char* nume, int randuri, int coloane) : Sala() {
-		this->randuri = randuri;
-		this->coloane = coloane;
-		this->capacitateLocuri = randuri * coloane;
+	Sala(char* nume, int capacitateLocuri) : Sala() {
+		this->capacitateLocuri = capacitateLocuri;
+		
+		int* locuri = new int[capacitateLocuri];
+		for (int i = 0; i < capacitateLocuri; i++)
+		{
+			locuri[i] = i;
+		}
+		this->locuri = locuri;
 
 		char* copieNume = new char[strlen(nume) + 1];
 		strcpy(copieNume, nume);
@@ -340,12 +389,25 @@ public:
 
 	Sala(int capacitateLocuri) : Sala() {
 		this->capacitateLocuri = capacitateLocuri;
+
+		int* locuri = new int[capacitateLocuri];
+		for (int i = 0; i < capacitateLocuri; i++)
+		{
+			locuri[i] = i;
+		}
+		this->locuri = locuri;
 	}
 
+
 	Sala(const Sala& sala) {
-		this->randuri = sala.randuri;
-		this->coloane = sala.coloane;
-		this->capacitateLocuri = randuri * coloane;
+		this->capacitateLocuri = sala.capacitateLocuri;
+
+		int* locuri = new int[capacitateLocuri];
+		for (int i = 0; i < capacitateLocuri; i++)
+		{
+			locuri[i] = i;
+		}
+		this->locuri = locuri;
 
 		char* copieNume = new char[strlen(sala.nume) + 1];
 		strcpy(copieNume, sala.nume);
@@ -379,8 +441,18 @@ public:
 		return this->id;
 	}
 
-	int operator+(Sala& sala) {
-		return capacitateLocuri + sala.capacitateLocuri;
+	bool operator!() {
+		return false;
+	}
+
+	operator char*() {
+		char* nume = new char[strlen(this->nume) + 1];
+		strcpy(nume, this->nume);
+		return nume;
+	}
+
+	Sala operator+(Sala& sala) {
+		return Sala(capacitateLocuri + sala.capacitateLocuri);
 	}
 
 	friend ostream& operator<<(ostream&, Sala&);
@@ -395,42 +467,28 @@ ostream& operator<<(ostream& output, Sala& sala) {
 }
 
 istream& operator>>(istream& input, Sala& sala) {
-	cout << "randuri:";
-	input >> sala.randuri;
-	cout << "coloane:";
-	input >> sala.coloane;
+	cout << "Nume: " << endl;
+
+	char buffer[100];
+	input >> ws;
+	input.getline(buffer, 99);
+	sala.nume = new char[strlen(buffer) + 1];
+	strcpy_s(sala.nume, strlen(buffer) + 1, buffer);
+
 	return input;
 }
-
-class Loc {
-private:
-	const int id;
-
-public:
-	Loc(int id) : id(id) {
-
-	}
-
-	bool operator==(const Loc& loc) {
-		return this->id == loc.id;
-	}
-
-	int operator[](int index) {
-		return this->id;
-	}
-};
 
 class Angajat {
 private:
 	const int id = nrAngajati;
 	static int nrAngajati;
 
-	char* nume;
+	char* nume = nullptr;
 	double salariu = 0;
 
 public:
 	Angajat() : id(++nrAngajati) {
-		nume = nullptr;
+
 	}
 
 	Angajat(char* nume, int salariu) : Angajat() {
@@ -438,6 +496,10 @@ public:
 		strcpy(copieNume, nume);
 		this->nume = copieNume;
 
+		this->salariu = salariu;
+	}
+
+	Angajat(int salariu) : Angajat() {
 		this->salariu = salariu;
 	}
 
@@ -468,8 +530,18 @@ public:
 		return copieNume;
 	}
 
-	double operator+(Angajat& angajat) {
-		return salariu + angajat.salariu;
+	operator char*() {
+		char* nume = new char[strlen(this->nume) + 1];
+		strcpy(nume, this->nume);
+		return nume;
+	}
+
+	bool operator!() {
+		return false;
+	}
+
+	Angajat operator+(Angajat& angajat) {
+		return Angajat(salariu + angajat.salariu);
 	}
 
 	friend ostream& operator<<(ostream&, Angajat&);
@@ -484,8 +556,14 @@ ostream& operator<<(ostream& output, Angajat& angajat) {
 	return output;
 }
 istream& operator>>(istream& input, Angajat& angajat) {
-	cout << "nume:";
-	input >> angajat.nume;
+	cout << "Nume: " << endl;
+
+	char buffer[100];
+	input >> ws;
+	input.getline(buffer, 99);
+	angajat.nume = new char[strlen(buffer) + 1];
+	strcpy_s(angajat.nume, strlen(buffer) + 1, buffer);
+
 	return input;
 }
 
@@ -525,14 +603,19 @@ public:
 };
 
 ostream& operator<<(ostream& output, Rulare& rulare) {
-	output << "id: " << rulare.id << endl;
+	output << "filmid: " << rulare.filmId << endl;
 	output << "data: " << rulare.data << endl;
+	output << "salaid: " << rulare.salaId << endl;
 	return output;
 }
 
 istream& operator>>(istream& input, Rulare& rulare) {
 	cout << "data:";
 	input >> rulare.data;
+	cout << "filmid:";
+	input >> rulare.filmId;
+	cout << "salaid:";
+	input >> rulare.salaId;
 	return input;
 }
 

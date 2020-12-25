@@ -1,3 +1,7 @@
 ﻿  proiect.cpp
-C:\Users\PC\Desktop\fac an 2\poo\proiect\proiect\proiect.cpp(169,15): warning C4244:  'return': conversion from 'double' to 'int', possible loss of data
+C:\Users\PC\Desktop\fac an 2\poo\proiect\proiect\proiect.cpp(619,26): warning C4244:  'argument': conversion from 'double' to 'int', possible loss of data
+C:\Users\PC\Desktop\fac an 2\poo\proiect\proiect\proiect.cpp(1224,4): warning C4065:  switch statement contains 'default' but no 'case' labels
+C:\Users\PC\Desktop\fac an 2\poo\proiect\proiect\proiect.cpp(1237,4): warning C4065:  switch statement contains 'default' but no 'case' labels
+C:\Users\PC\Desktop\fac an 2\poo\proiect\proiect\proiect.cpp(1250,4): warning C4065:  switch statement contains 'default' but no 'case' labels
+C:\Users\PC\Desktop\fac an 2\poo\proiect\proiect\proiect.cpp(1263,4): warning C4065:  switch statement contains 'default' but no 'case' labels
   proiect.vcxproj -> C:\Users\PC\Desktop\fac an 2\poo\proiect\proiect\Debug\proiect.exe

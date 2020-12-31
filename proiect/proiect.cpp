@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <fstream>
 
 using namespace std;
 
@@ -45,9 +46,12 @@ public:
 
 
 	Film(const Film& film) {
-		char* titlu = new char[strlen(film.titlu) + 1];
-		strcpy(titlu, film.titlu);
-		this->titlu = titlu;
+		if (film.titlu != nullptr) {
+			char* titlu = new char[strlen(film.titlu) + 1];
+			strcpy(titlu, film.titlu);
+			this->titlu = titlu;
+		}
+		
 
 		int* copieOreRulare = new int[film.nrOreRulare];
 		for (int i = 0; i < film.nrOreRulare; i++)
@@ -145,21 +149,102 @@ public:
 		return false;
 	}
 
+	void serialize(string fileName)
+	{
+		ofstream f;
+
+		f.open(fileName, ios::binary | ios::app);
+
+		f.write((char*)& id, sizeof(id));
+		f.write((char*)& durata, sizeof(durata));
+		f.write((char*)& nrOreRulare, sizeof(nrOreRulare));
+		f.write((char*)& oreRulare, sizeof(oreRulare));
+
+		int nrCaractere = strlen(titlu);
+		f.write((char*)& nrCaractere, sizeof(nrCaractere));
+		//f.write(titlu, nrCaractere + 1);
+
+		f.close();
+	}
+
+	static void deserialize(string fileName)
+	{
+		ifstream f(fileName, ios::binary);
+
+		if (f.is_open()) {
+			vector<Film> filme;
+
+			while (true) {
+				if (f.eof()) {
+					break;
+				}
+
+				int size = 0;
+
+				Film film;
+
+				f.read((char*)& film.id, sizeof(film.id));
+				size += sizeof(film.id);
+
+				f.read((char*)& film.durata, sizeof(film.durata));
+				size += sizeof(film.durata);
+
+				f.read((char*)& film.nrOreRulare, sizeof(film.nrOreRulare));
+				size += sizeof(film.nrOreRulare);
+
+				f.read((char*)& film.oreRulare, sizeof(film.oreRulare));
+				size += sizeof(film.oreRulare);
+
+				int nrCaractere;
+				//f.getLine((char*)& nrCaractere, sizeof(nrCaractere));
+				/*char* titlu = new char[nrCaractere + 1];
+				f.read(titlu, nrCaractere + 1);
+				film.titlu = titlu;*/
+
+				size += sizeof(nrCaractere);
+				//size += sizeof(nrCaractere * sizeof(char));
+
+				
+				f.seekg(size,ios::cur);
+			
+
+				filme.push_back(film);
+			}
+
+			f.close();
+
+	
+			for (vector<Film>::iterator i = filme.begin(); i != filme.end(); i++)
+			{
+				cout << *i;
+			}
+		}
+		else {
+
+		}
+	}
+
+
 	friend ostream& operator<<(ostream&, Film&);
 	friend istream& operator>>(istream&, Film&);
-	friend ofstream& operator<<(ofstream&, Film);
-	friend ifstream& operator>>(ifstream&, Film&);
 };
 
 ostream& operator<<(ostream& output, Film& film) {
 	output << "Titlu: " << film.titlu << endl;
 	output << "ID: " << film.id << endl;
 	output << "Durata: " << film.durata << endl;
+	output << "Ore rulare: ";
+	for (int i = 0; i < film.nrOreRulare; i++)
+	{
+		output << film.oreRulare[i] << " ";
+	}
+	
+	output << endl;
 	return output;
 }
 
 istream& operator>>(istream& input, Film& film) {
-	cout << "Titlu: " << endl;
+	cout << "Titlu: ";
 
 	char buffer[100];
 	input >> ws;
@@ -167,8 +252,21 @@ istream& operator>>(istream& input, Film& film) {
 	film.titlu = new char[strlen(buffer) + 1];
 	strcpy_s(film.titlu, strlen(buffer) + 1, buffer);
 
-	cout << "Durata: " << endl;
+	cout << "Durata: ";
 	input >> film.durata;
+
+	cout << "Nr ore rulare: ";
+	input >> film.nrOreRulare;
+
+	cout << "Ore rulare: ";
+	film.oreRulare = new int[film.nrOreRulare];
+
+	for (int i = 0; i < film.nrOreRulare; i++)
+	{
+		input >> film.oreRulare[i];
+	}
+
+	cout << endl;
 
 	return input;
 }
@@ -280,20 +378,56 @@ public:
 		return id < bilet.id;
 	}
 
+	void serialize(string fileName)
+	{
+		ofstream f;
+
+		f.open(fileName, ios::binary | ios::app);
+
+		f.write((char*)& id, sizeof(id));
+		f.write((char*)& pret, sizeof(pret));
+		f.write((char*)& rulareId, sizeof(rulareId));
+		f.write((char*)& loc, sizeof(loc));
+
+		int nrCaractere = strlen(titluFilm);
+		f.write((char*)& nrCaractere, sizeof(nrCaractere));
+		f.write(titluFilm, nrCaractere + 1);
+
+		f.close();
+	}
+
+	void deserialize(string fileName)
+	{
+		ifstream f(fileName, ios::binary);
+
+		f.read((char*)& id, sizeof(id));
+		f.read((char*)& pret, sizeof(pret));
+		f.read((char*)& rulareId, sizeof(rulareId));
+		f.read((char*)& loc, sizeof(loc));
+
+		int nrCaractere;
+		f.read((char*)& nrCaractere, sizeof(nrCaractere));
+		char* titluFilm = new char[nrCaractere];
+		f.read(titluFilm, nrCaractere);
+		this->titluFilm = titluFilm;
+
+		f.close();
+	}
+
 	friend ostream& operator<<(ostream&, Bilet&);
 	friend istream& operator>>(istream&, Bilet&);
-	friend ofstream& operator<<(ofstream&, Bilet);
-	friend ifstream& operator>>(ifstream&, Bilet&);
 };
 
 ostream& operator<<(ostream& output, Bilet& bilet) {
-	output << "pret: " << bilet.pret << endl;
-	output << "id: " << bilet.id << endl;
+	output << "Titlu film: " << bilet.titluFilm << endl;
+	output << "Pret: " << bilet.pret << endl;
+	output << "Id: " << bilet.id << endl;
+	output << endl;
 	return output;
 }
 
 istream& operator>>(istream& input, Bilet& bilet) {
-	cout << "Titlu film: " << endl;
+	cout << "Titlu film: ";
 
 	char buffer[100];
 	input >> ws;
@@ -301,12 +435,16 @@ istream& operator>>(istream& input, Bilet& bilet) {
 	bilet.titluFilm = new char[strlen(buffer) + 1];
 	strcpy_s(bilet.titluFilm, strlen(buffer) + 1, buffer);
 
-	cout << "Pret:" << endl;
+	cout << "Pret:";
 	input >> bilet.pret;
-	cout << "Rulare id:" << endl;
+	cout << "Rulare id:";
 	input >> bilet.rulareId;
+
+	cout << endl;
+
 	return input;
 }
+
 
 class Client {
 private:
@@ -374,15 +512,28 @@ public:
 		return id < client.id;
 	}
 
+	void serialize(string fileName)
+	{
+		ofstream f;
+
+		f.open(fileName, ios::binary | ios::app);
+
+		f.write((char*)& id, sizeof(id));
+
+		int nrCaractere = strlen(nume);
+		f.write((char*)& nrCaractere, sizeof(nrCaractere));
+		f.write(nume, nrCaractere + 1);
+
+		f.close();
+	}
+
 	friend ostream& operator<<(ostream&, Client&);
 	friend istream& operator>>(istream&, Client&);
-	friend ofstream& operator<<(ofstream&, Client);
-	friend ifstream& operator>>(ifstream&, Client&);
 };
 
 ostream& operator<<(ostream& output, Client& client) {
-	output << "nume: " << client.nume << endl;
-	output << "id: " << client.id << endl;
+	output << "Nume: " << client.nume << endl;
+	output << "Id: " << client.id << endl;
 	return output;
 }
 
@@ -395,8 +546,11 @@ istream& operator>>(istream& input, Client& client) {
 	client.nume = new char[strlen(buffer) + 1];
 	strcpy_s(client.nume, strlen(buffer) + 1, buffer);
 
+	cout << endl;
 	return input;
 }
+
+
 
 class Sala {
 private:
@@ -517,25 +671,46 @@ public:
 		return Sala(nrLocuri + sala.nrLocuri);
 	}
 
+	void serialize(string fileName)
+	{
+		ofstream f;
+
+		f.open(fileName, ios::binary | ios::app);
+
+		f.write((char*)& id, sizeof(id));
+		f.write((char*)& nrLocuri, sizeof(nrLocuri));
+
+		int nrCaractere = strlen(nume);
+		f.write((char*)& nrCaractere, sizeof(nrCaractere));
+		f.write(nume, nrCaractere + 1);
+
+		f.close();
+	}
+
 	friend ostream& operator<<(ostream&, Sala&);
 	friend istream& operator>>(istream&, Sala&);
-	friend ofstream& operator<<(ofstream&, Sala);
-	friend ifstream& operator>>(ifstream&, Sala&);
 };
 
 ostream& operator<<(ostream& output, Sala& sala) {
-	output << "id: " << sala.id << endl;
+	output << "Id: " << sala.id << endl;
+	output << "Nume: " << sala.nume << endl;
+	output << "Nr locuri: " << sala.nrLocuri << endl;
 	return output;
 }
 
 istream& operator>>(istream& input, Sala& sala) {
-	cout << "Nume: " << endl;
+	cout << "Nume: ";
 
 	char buffer[100];
 	input >> ws;
 	input.getline(buffer, 99);
 	sala.nume = new char[strlen(buffer) + 1];
 	strcpy_s(sala.nume, strlen(buffer) + 1, buffer);
+
+	cout << "Nr locuri: ";
+	cin >> sala.nrLocuri;
+
+	cout << endl;
 
 	return input;
 }
@@ -623,10 +798,24 @@ public:
 		return id < angajat.id;
 	}
 
+	void serialize(string fileName)
+	{
+		ofstream f;
+
+		f.open(fileName, ios::binary | ios::app);
+
+		f.write((char*)& id, sizeof(id));
+		f.write((char*)& salariu, sizeof(salariu));
+
+		int nrCaractere = strlen(nume);
+		f.write((char*)& nrCaractere, sizeof(nrCaractere));
+		f.write(nume, nrCaractere + 1);
+
+		f.close();
+	}
+
 	friend ostream& operator<<(ostream&, Angajat&);
 	friend istream& operator>>(istream&, Angajat&);
-	friend ofstream& operator<<(ofstream&, Angajat);
-	friend ifstream& operator>>(ifstream&, Angajat&);
 };
 
 ostream& operator<<(ostream& output, Angajat& angajat) {
@@ -643,8 +832,11 @@ istream& operator>>(istream& input, Angajat& angajat) {
 	angajat.nume = new char[strlen(buffer) + 1];
 	strcpy_s(angajat.nume, strlen(buffer) + 1, buffer);
 
+	cout << endl;
+
 	return input;
 }
+
 
 class Rulare {
 private:
@@ -714,28 +906,44 @@ public:
 		return false;
 	}
 
+	void serialize(string fileName)
+	{
+		ofstream f;
+
+		f.open(fileName, ios::binary | ios::app);
+
+		f.write((char*)& id, sizeof(id));
+		f.write((char*)& data, sizeof(data));
+		f.write((char*)& filmId, sizeof(filmId));
+		f.write((char*)& salaId, sizeof(salaId));
+
+		f.close();
+	}
+
 	friend ostream& operator<<(ostream&, Rulare&);
 	friend istream& operator>>(istream&, Rulare&);
-	friend ofstream& operator<<(ofstream&, Rulare);
-	friend ifstream& operator>>(ifstream&, Rulare&);
 };
 
 ostream& operator<<(ostream& output, Rulare& rulare) {
-	output << "filmid: " << rulare.filmId << endl;
+	output << "film id: " << rulare.filmId << endl;
 	output << "data: " << rulare.data << endl;
-	output << "salaid: " << rulare.salaId << endl;
+	output << "sala id: " << rulare.salaId << endl;
 	return output;
 }
 
 istream& operator>>(istream& input, Rulare& rulare) {
 	cout << "data:";
 	input >> rulare.data;
-	cout << "filmid:";
+	cout << "film id:";
 	input >> rulare.filmId;
-	cout << "salaid:";
+	cout << "sala id:";
 	input >> rulare.salaId;
+
+	cout << endl;
+
 	return input;
 }
+
 
 int Film::nrFilme = 0;
 int Bilet::nrBilete = 0;
@@ -767,7 +975,21 @@ public:
 	}
 
 	void afiseazaSituatieFilme() {
+		system("cls");
 
+		map<int, Film>::iterator it;
+
+		for (it = filme.begin(); it != filme.end(); it++)
+		{
+			cout << it->second;
+			cout << endl;
+		}
+
+		int i;
+		cout << "Apasa 0 pt meniu" << endl;
+		cin >> i;
+
+		//Film::deserialize("filme.bin");
 	}
 
 	void afiseazaSituatieLocuriLibere() {
@@ -783,14 +1005,19 @@ public:
 
 		filme.insert(pair<int, Film>(film.getId(), film));
 
+		film.serialize("filme.bin");
+
 		system("cls");
 		int i;
 		cout << film << endl;
-		cout << "Film adaugat! Apasa 0 pt a continua" << endl;
+		cout << "Film adaugat! Apasa 0 pt meniu" << endl;
 		cin >> i;
 	}
 
-	void stergeFilm(int filmId) {
+	void stergeFilm() {
+		int filmId;
+		cout << "Id film";
+		cin >> filmId;
 		filme.erase(filmId);
 	}
 
@@ -844,15 +1071,26 @@ public:
 
 	//operatii bilet
 	void adaugaBilet() {
+		system("cls");
+
 		Bilet bilet;
 		cin >> bilet;
 
 		bilete.insert(pair<int, Bilet>(bilet.getId(), bilet));
 
-		cout << "Bilet adaugat!" << endl;
+		system("cls");
+		int i;
+		cout << bilet << endl;
+		cout << "Bilet adaugat! Apasa 0 pt a continua" << endl;
+		cin >> i;
+
 	}
 
-	void stergeBilet(int biletId) {
+	void stergeBilet() {
+		int biletId;
+		cout << "Id bilet";
+		cin >> biletId;
+
 		bilete.erase(biletId);
 	}
 
@@ -911,13 +1149,25 @@ public:
 
 	//operatii sala
 	void adaugaSala() {
+		system("cls");
+
 		Sala sala;
 		cin >> sala;
 
 		sali.insert(pair<int, Sala>(sala.getId(), sala));
+
+		system("cls");
+		int i;
+		cout << sala << endl;
+		cout << "Sala adaugata! Apasa 0 pt meniu" << endl;
+		cin >> i;
 	}
 
-	void stergeSala(int salaId) {
+	void stergeSala() {
+		int salaId;
+		cout << "Id sala";
+		cin >> salaId;
+
 		sali.erase(salaId);
 	}
 
@@ -950,13 +1200,25 @@ public:
 
 	//operatii client
 	void adaugaClient() {
+		system("cls");
+
 		Client client;
 		cin >> client;
 
 		clienti.insert(pair<int, Client>(client.getId(), client));
+
+		system("cls");
+		int i;
+		cout << client << endl;
+		cout << "Client adaugat! Apasa 0 pt meniu" << endl;
+		cin >> i;
 	}
 
-	void stergeClient(int clientId) {
+	void stergeClient() {
+		int clientId;
+		cout << "Id client";
+		cin >> clientId;
+
 		clienti.erase(clientId);
 	}
 
@@ -979,13 +1241,24 @@ public:
 
 	//operatii angajat
 	void adaugaAngajat() {
+		system("cls");
+
 		Angajat angajat;
 		cin >> angajat;
 
 		angajati.insert(pair<int, Angajat>(angajat.getId(), angajat));
+
+		system("cls");
+		int i;
+		cout << angajat << endl;
+		cout << "Angajat adaugat! Apasa 0 pt meniu" << endl;
+		cin >> i;
 	}
 
-	void stergeAngajat(int angajatId) {
+	void stergeAngajat() {
+		int angajatId;
+		cout << "Id angajat";
+		cin >> angajatId;
 		angajati.erase(angajatId);
 	}
 
@@ -1018,13 +1291,25 @@ public:
 
 	//operatii rulare
 	void adaugaRulare() {
+		system("cls");
+
 		Rulare rulare;
 		cin >> rulare;
 
 		rulari.insert(pair<int, Rulare>(rulare.getId(), rulare));
+
+		system("cls");
+		int i;
+		cout << rulare << endl;
+		cout << "Rulare adaugata! Apasa 0 pt meniu" << endl;
+		cin >> i;
 	}
 
-	void stergeRulare(int rulareId) {
+	void stergeRulare() {
+		int rulareId;
+		cout << "Id rulare";
+		cin >> rulareId;
+
 		rulari.erase(rulareId);
 	}
 
@@ -1182,6 +1467,11 @@ int main()
 
 		switch (optiuneMeniu)
 		{
+		case 3: {
+			bd.afiseazaSituatieFilme();
+			break;
+		}
+
 		case 4: {
 
 			int optiuneBilet = afiseazaOptiuniBilet();
@@ -1190,6 +1480,8 @@ int main()
 			{
 			case 1:
 				bd.adaugaBilet();
+			case 3:
+				bd.stergeBilet();
 			default:
 				break;
 			}
@@ -1205,6 +1497,8 @@ int main()
 			{
 			case 1:
 				bd.adaugaFilm();
+			case 3:
+				bd.stergeFilm();
 			default:
 				break;
 			}
@@ -1219,6 +1513,10 @@ int main()
 
 			switch (optiuneClient)
 			{
+			case 1:
+				bd.adaugaClient();
+			case 3:
+				bd.stergeClient();
 			default:
 				break;
 			}
@@ -1232,6 +1530,10 @@ int main()
 
 			switch (optiuneSala)
 			{
+			case 1:
+				bd.adaugaSala();
+			case 3:
+				bd.stergeSala();
 			default:
 				break;
 			}
@@ -1245,6 +1547,10 @@ int main()
 
 			switch (optiuneAngajat)
 			{
+			case 1:
+				bd.adaugaAngajat();
+			case 3:
+				bd.stergeAngajat();
 			default:
 				break;
 			}
@@ -1258,6 +1564,10 @@ int main()
 
 			switch (optiuneRulare)
 			{
+			case 1:
+				bd.adaugaRulare();
+			case 3:
+				bd.stergeRulare();
 			default:
 				break;
 			}

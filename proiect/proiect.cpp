@@ -952,14 +952,6 @@ int Sala::nrSali = 0;
 int Angajat::nrAngajati = 0;
 int Rulare::nrRulari = 0;
 
-
-enum class EditareFilm { titlu, durata, oreRulare };
-enum class EditareBilet { titluFilm, pret, rulareId, loc };
-enum class EditareClient { nume };
-enum class EditareSala { titlu, nrLocuri };
-enum class EditareAngajat { nume, salariu };
-enum class EditareRulare { dataRulare, filmId, salaId };
-
 class BazaDeDate {
 private:
 	map<int,Film> filme;
@@ -1021,12 +1013,28 @@ public:
 		filme.erase(filmId);
 	}
 
-	void editeazaFilm(int filmId, EditareFilm optiune) {
-		Film film = filme[filmId];
+	void editeazaFilm(int optiune) {
+		system("cls");
 
 		switch (optiune)
 		{
-		case EditareFilm::titlu:
+		case 1: {
+			int filmId;
+			cout << "Id film";
+			cin >> filmId;
+
+			if (filme.find(filmId) == filme.end()) {
+				cout << "Nu exista film!" << endl;
+
+				int i;
+				cout << "Apasa 0 pt meniu!" << endl;
+				cin >> i;
+
+				return;
+			}
+	
+			Film film = filme[filmId];
+
 			char titlu[100];
 
 			cout << "Titlu nou:" << endl;
@@ -1035,8 +1043,26 @@ public:
 			film.setTitlu(titlu);
 
 			break;
+		}
 
-		case EditareFilm::durata:
+
+		case 2: {
+			int filmId;
+			cout << "Id film";
+			cin >> filmId;
+
+			if (filme.find(filmId) == filme.end()) {
+				cout << "Nu exista film!" << endl;
+
+				int i;
+				cout << "Apasa 0 pt meniu!" << endl;
+				cin >> i;
+
+				return;
+			}
+
+			Film film = filme[filmId];
+
 			int durata;
 
 			cout << "Durata noua: " << endl;
@@ -1045,8 +1071,26 @@ public:
 			film.setDurata(durata);
 
 			break;
+		}
+			
 
-		case EditareFilm::oreRulare:
+		case 3: {
+			int filmId;
+			cout << "Id film";
+			cin >> filmId;
+
+			if (filme.find(filmId) == filme.end()) {
+				cout << "Nu exista film!" << endl;
+
+				int i;
+				cout << "Apasa 0 pt meniu!" << endl;
+				cin >> i;
+
+				return;
+			}
+
+			Film film = filme[filmId];
+
 			int nrOreRulare;
 
 			cout << "Nr de ore rulare noi: " << endl;
@@ -1055,7 +1099,7 @@ public:
 			int input = 0;
 			int* oreRulare = new int[nrOreRulare];
 			int i = 0;
-	
+
 			while ((input != 0) && (i < nrOreRulare))
 			{
 				cin >> input;
@@ -1066,6 +1110,11 @@ public:
 			film.setOreRulare(nrOreRulare, oreRulare);
 
 			break;
+		}
+
+		default:
+			break;
+			
 		}
 	}
 
@@ -1088,54 +1137,34 @@ public:
 
 	void stergeBilet() {
 		int biletId;
-		cout << "Id bilet";
+		cout << "Id bilet:";
 		cin >> biletId;
 
 		bilete.erase(biletId);
 	}
 
-	void editeazaBilet(int biletId, EditareBilet optiune) {
-		Bilet bilet = bilete[biletId];
+	void editeazaBilet(int optiune) {
+		system("cls");
 
 		switch (optiune)
 		{
-		case EditareBilet::titluFilm:
-			char titlu[100];
+		case 1: {
+			int biletId;
+			cout << "Id bilet:";
+			cin >> biletId;
 
-			cout << "Titlu nou:" << endl;
-			cin.getline(titlu, 100, '\n');
+			if (bilete.find(biletId) == bilete.end()) {
+				cout << "Nu exista bilet!" << endl;
 
-			bilet.setTitluFilm(titlu);
-
-			break;
-
-		case EditareBilet::pret:
-			int pret;
-
-			cout << "pret nou: " << endl;
-			cin >> pret;
-
-			bilet.setPret(pret);
-
-			break;
-
-		case EditareBilet::rulareId:
-			int rulareId;
-
-			cout << "Rulare id nou: " << endl;
-			cin >> rulareId;
-
-			//verifica daca exista rulare
-			if (rulari.find(rulareId) == rulari.end()) {
-				cout << "Rularea nu exista!" << endl;
+				int i;
+				cout << "Apasa 0 pt meniu!" << endl;
+				cin >> i;
+				
+				return;
 			}
-			else {
-				bilet.setRulareId(rulareId);
-			}
+			
+			Bilet bilet = bilete[biletId];
 
-			break;
-
-		case EditareBilet::loc:
 			int loc;
 
 			cout << "Loc nou: " << endl;
@@ -1143,6 +1172,10 @@ public:
 
 			bilet.setLoc(loc);
 
+			break;
+		}
+			
+		default:
 			break;
 		}
 	}
@@ -1165,18 +1198,33 @@ public:
 
 	void stergeSala() {
 		int salaId;
-		cout << "Id sala";
+		cout << "Id sala:";
 		cin >> salaId;
 
 		sali.erase(salaId);
 	}
 
-	void editeazaSala(int salaId, EditareSala optiune) {
-		Sala sala = sali[salaId];
-
+	void editeazaSala(int optiune) {
+		
 		switch (optiune)
 		{
-		case EditareSala::titlu:
+		case 1: {
+			int salaId;
+			cout << "Id sala:";
+			cin >> salaId;
+
+			if (sali.find(salaId) == sali.end()) {
+				cout << "Nu exista sala!" << endl;
+
+				int i;
+				cout << "Apasa 0 pt meniu!" << endl;
+				cin >> i;
+
+				return;
+			}
+
+			Sala sala = sali[salaId];
+
 			char nume[100];
 
 			cout << "Nume nou:" << endl;
@@ -1185,8 +1233,28 @@ public:
 			sala.setNume(nume);
 
 			break;
+		}
 
-		case EditareSala::nrLocuri:
+			
+
+		case 2: {
+			int salaId;
+			cout << "Id sala:";
+			cin >> salaId;
+
+			if (sali.find(salaId) == sali.end()) {
+				cout << "Nu exista sala!" << endl;
+
+				int i;
+				cout << "Apasa 0 pt meniu!" << endl;
+				cin >> i;
+
+				return;
+			}
+
+			Sala sala = sali[salaId];
+
+
 			int nrLocuri;
 
 			cout << "Nr Locuri nou: " << endl;
@@ -1194,6 +1262,10 @@ public:
 
 			sala.setNrLocuri(nrLocuri);
 
+			break;
+		}
+			
+		default:
 			break;
 		}
 	}
@@ -1216,18 +1288,33 @@ public:
 
 	void stergeClient() {
 		int clientId;
-		cout << "Id client";
+		cout << "Id client:";
 		cin >> clientId;
 
 		clienti.erase(clientId);
 	}
 
-	void editeazaClient(int clientId, EditareClient optiune) {
-		Client client = clienti[clientId];
-
+	void editeazaClient(int optiune) {
+		
 		switch (optiune)
 		{
-		case EditareClient::nume:
+		case 1: {
+			int clientId;
+			cout << "Id client:";
+			cin >> clientId;
+
+			if (clienti.find(clientId) == clienti.end()) {
+				cout << "Nu exista client!" << endl;
+
+				int i;
+				cout << "Apasa 0 pt meniu!" << endl;
+				cin >> i;
+
+				return;
+			}
+
+			Client client = clienti[clientId];
+
 			char nume[100];
 
 			cout << "Nume nou:" << endl;
@@ -1235,6 +1322,10 @@ public:
 
 			client.setNume(nume);
 
+			break;
+		}
+			
+		default:
 			break;
 		}
 	}
@@ -1257,17 +1348,32 @@ public:
 
 	void stergeAngajat() {
 		int angajatId;
-		cout << "Id angajat";
+		cout << "Id angajat:";
 		cin >> angajatId;
 		angajati.erase(angajatId);
 	}
 
-	void editeazaAngajat(int angajatId, EditareAngajat optiune) {
-		Angajat angajat = angajati[angajatId];
+	void editeazaAngajat(int optiune) {
 
 		switch (optiune)
 		{
-		case EditareAngajat::nume:
+		case 1: {
+			int angajatId;
+			cout << "Id angajat:";
+			cin >> angajatId;
+
+			if (angajati.find(angajatId) == angajati.end()) {
+				cout << "Nu exista angajat!" << endl;
+
+				int i;
+				cout << "Apasa 0 pt meniu!" << endl;
+				cin >> i;
+
+				return;
+			}
+
+			Angajat angajat = angajati[angajatId];
+
 			char nume[100];
 
 			cout << "Nume nou:" << endl;
@@ -1276,8 +1382,26 @@ public:
 			angajat.setNume(nume);
 
 			break;
+		}
+			
 
-		case EditareAngajat::salariu:
+		case 2: {
+			int angajatId;
+			cout << "Id angajat:";
+			cin >> angajatId;
+
+			if (angajati.find(angajatId) == angajati.end()) {
+				cout << "Nu exista angajat!" << endl;
+
+				int i;
+				cout << "Apasa 0 pt meniu!" << endl;
+				cin >> i;
+
+				return;
+			}
+
+			Angajat angajat = angajati[angajatId];
+
 			double salariu;
 
 			cout << "Salariu nou:" << endl;
@@ -1285,6 +1409,10 @@ public:
 
 			angajat.setSalariu(salariu);
 
+			break;
+		}
+			
+		default:
 			break;
 		}
 	}
@@ -1307,18 +1435,34 @@ public:
 
 	void stergeRulare() {
 		int rulareId;
-		cout << "Id rulare";
+		cout << "Id rulare:";
 		cin >> rulareId;
 
 		rulari.erase(rulareId);
 	}
 
-	void editeazaRulare(int rulareId, EditareRulare optiune) {
-		Rulare rulare = rulari[rulareId];
+	void editeazaRulare(int optiune) {
+		
 
 		switch (optiune)
 		{
-		case EditareRulare::dataRulare:
+		case 1: {
+			int rulareId;
+			cout << "Id rulare:";
+			cin >> rulareId;
+
+			if (rulari.find(rulareId) == rulari.end()) {
+				cout << "Nu exista rulare!" << endl;
+
+				int i;
+				cout << "Apasa 0 pt meniu!" << endl;
+				cin >> i;
+
+				return;
+			}
+
+			Rulare rulare = rulari[rulareId];
+
 			int dataRulare;
 
 			cout << "Data rulare noua:" << endl;
@@ -1327,8 +1471,26 @@ public:
 			rulare.setData(dataRulare);
 
 			break;
+		}
+			
 
-		case EditareRulare::filmId:
+		case 2: {
+			int rulareId;
+			cout << "Id rulare:";
+			cin >> rulareId;
+
+			if (rulari.find(rulareId) == rulari.end()) {
+				cout << "Nu exista rulare!" << endl;
+
+				int i;
+				cout << "Apasa 0 pt meniu!" << endl;
+				cin >> i;
+
+				return;
+			}
+
+			Rulare rulare = rulari[rulareId];
+
 			int filmId;
 
 			cout << "Film id nou:" << endl;
@@ -1337,8 +1499,26 @@ public:
 			rulare.setFilmId(filmId);
 
 			break;
+		}
+			
 
-		case EditareRulare::salaId:
+		case 3: {
+			int rulareId;
+			cout << "Id rulare:";
+			cin >> rulareId;
+
+			if (rulari.find(rulareId) == rulari.end()) {
+				cout << "Nu exista rulare!" << endl;
+
+				int i;
+				cout << "Apasa 0 pt meniu!" << endl;
+				cin >> i;
+
+				return;
+			}
+
+			Rulare rulare = rulari[rulareId];
+
 			int salaId;
 
 			cout << "Sala id noua:" << endl;
@@ -1346,6 +1526,10 @@ public:
 
 			rulare.setSalaId(salaId);
 
+			break;
+		}
+			
+		default:
 			break;
 		}
 	}
@@ -1385,6 +1569,19 @@ int afiseazaOptiuniBilet() {
 
 }
 
+int afiseazaOptiuniEditareBilet() {
+	system("cls");
+
+	cout << "1: Editeaza loc" << endl;
+	cout << "0: Meniu" << endl;
+
+	int val;
+	cin >> val;
+	return val;
+
+}
+
+
 int afiseazaOptiuniFilm() {
 	system("cls");
 
@@ -1398,6 +1595,21 @@ int afiseazaOptiuniFilm() {
 	cin >> val;
 	return val;
 }
+
+int afiseazaOptiuniEditareFilm() {
+	system("cls");
+
+	cout << "1: Editeaza nume" << endl;
+	cout << "2: Editeaza durata" << endl;
+	cout << "3: Editeaza ore rulare" << endl;
+	cout << "0: Meniu" << endl;
+
+	int val;
+	cin >> val;
+	return val;
+
+}
+
 
 int afiseazaOptiuniClient() {
 	system("cls");
@@ -1413,6 +1625,19 @@ int afiseazaOptiuniClient() {
 	return val;
 }
 
+int afiseazaOptiuniEditareClient() {
+	system("cls");
+
+	cout << "1: Editeaza nume" << endl;
+	cout << "0: Meniu" << endl;
+
+	int val;
+	cin >> val;
+	return val;
+
+}
+
+
 int afiseazaOptiuniSala() {
 	system("cls");
 
@@ -1426,6 +1651,20 @@ int afiseazaOptiuniSala() {
 	cin >> val;
 	return val;
 }
+
+int afiseazaOptiuniEditareSala() {
+	system("cls");
+
+	cout << "1: Editeaza nume" << endl;
+	cout << "2: Editeaza nr locuri" << endl;
+	cout << "0: Meniu" << endl;
+
+	int val;
+	cin >> val;
+	return val;
+
+}
+
 
 int afiseazaOptiuniAngajat() {
 	system("cls");
@@ -1441,6 +1680,20 @@ int afiseazaOptiuniAngajat() {
 	return val;
 }
 
+int afiseazaOptiuniEditareAngajat() {
+	system("cls");
+
+	cout << "1: Editeaza nume" << endl;
+	cout << "2: Editeaza salariu" << endl;
+	cout << "0: Meniu" << endl;
+
+	int val;
+	cin >> val;
+	return val;
+
+}
+
+
 int afiseazaOptiuniRulare() {
 	system("cls");
 
@@ -1455,6 +1708,19 @@ int afiseazaOptiuniRulare() {
 	return val;
 }
 
+int afiseazaOptiuniEditareRulare() {
+	system("cls");
+
+	cout << "1: Editeaza sala id" << endl;
+	cout << "2: Editeaza data" << endl;
+	cout << "2: Editeaza film id" << endl;
+	cout << "0: Meniu" << endl;
+
+	int val;
+	cin >> val;
+	return val;
+
+}
 
 int main()
 {
@@ -1478,10 +1744,22 @@ int main()
 
 			switch (optiuneBilet)
 			{
-			case 1:
+			case 1: {
 				bd.adaugaBilet();
-			case 3:
+				break;
+			}
+				
+			case 2: {
+				int optiuneEditareBilet = afiseazaOptiuniEditareBilet();
+				bd.editeazaBilet(optiuneEditareBilet);
+				break;
+			}
+				
+			case 3: {
 				bd.stergeBilet();
+				break;
+			}
+				
 			default:
 				break;
 			}
@@ -1495,10 +1773,22 @@ int main()
 
 			switch (optiuneFilm)
 			{
-			case 1:
+			case 1: {
 				bd.adaugaFilm();
-			case 3:
+				break;
+			}
+				
+			case 2: {
+				int optiuneEditareFilm = afiseazaOptiuniEditareFilm();
+				bd.editeazaFilm(optiuneEditareFilm);
+				break;
+			}
+				
+			case 3: {
 				bd.stergeFilm();
+				break;
+			}
+				
 			default:
 				break;
 			}
@@ -1513,10 +1803,22 @@ int main()
 
 			switch (optiuneClient)
 			{
-			case 1:
+			case 1: {
 				bd.adaugaClient();
-			case 3:
+				break;
+			}
+				
+			case 2: {
+				int optiuneEditareClient = afiseazaOptiuniEditareClient();
+				bd.editeazaClient(optiuneEditareClient);
+				break;
+			}
+				
+			case 3: {
 				bd.stergeClient();
+				break;
+			}
+				
 			default:
 				break;
 			}
@@ -1530,10 +1832,22 @@ int main()
 
 			switch (optiuneSala)
 			{
-			case 1:
+			case 1: {
 				bd.adaugaSala();
-			case 3:
+				break;
+			}
+				
+			case 2: {
+				int optiuneEditareSala = afiseazaOptiuniEditareSala();
+				bd.editeazaSala(optiuneEditareSala);
+				break;
+			}
+				
+			case 3: {
 				bd.stergeSala();
+				break;
+			}
+				
 			default:
 				break;
 			}
@@ -1547,10 +1861,22 @@ int main()
 
 			switch (optiuneAngajat)
 			{
-			case 1:
+			case 1: {
 				bd.adaugaAngajat();
-			case 3:
+				break;
+			}
+				
+			case 2: {
+				int optiuneEditareAngajat = afiseazaOptiuniEditareAngajat();
+				bd.editeazaAngajat(optiuneEditareAngajat);
+				break;
+			}
+				
+			case 3: {
 				bd.stergeAngajat();
+				break;
+			}
+				
 			default:
 				break;
 			}
@@ -1564,10 +1890,22 @@ int main()
 
 			switch (optiuneRulare)
 			{
-			case 1:
+			case 1: {
 				bd.adaugaRulare();
-			case 3:
+				break;
+			}
+				
+			case 2: {
+				int optiuneEditareAngajat = afiseazaOptiuniEditareAngajat();
+				bd.editeazaAngajat(optiuneEditareAngajat);
+				break;
+			}
+				
+			case 3: {
 				bd.stergeRulare();
+				break;
+			}
+				
 			default:
 				break;
 			}
@@ -1580,6 +1918,6 @@ int main()
 		}
 
 	} while (optiuneMeniu != 0);
-
+	
 	return 0;
 }

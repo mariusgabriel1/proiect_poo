@@ -6,6 +6,7 @@
 #include <string>
 #include <map>
 #include <fstream>
+#include <ctime>
 
 using namespace std;
 
@@ -119,7 +120,6 @@ public:
 	int getId() {
 		return id;
 	}
-
 
 	char* operator[](int index) {
 		char* titlu = new char[strlen(this->titlu) + 1];
@@ -278,6 +278,7 @@ private:
 
 	double pret = 0;
 	int rulareId = 0;
+	int clientId = 0;
 	int loc = 0;
 
 	char* titluFilm = nullptr;
@@ -289,7 +290,7 @@ public:
 	}
 
 
-	Bilet(char* titluFilm, double pret, int rulareId,int loc) : Bilet() {
+	Bilet(char* titluFilm, double pret, int rulareId,int loc, int clientId) : Bilet() {
 		char* copieTitluFilm = new char[strlen(titluFilm) + 1];
 		strcpy(copieTitluFilm, titluFilm);
 		this->titluFilm = copieTitluFilm;
@@ -297,6 +298,7 @@ public:
 		this->pret = pret;
 		this->rulareId = rulareId;
 		this->loc = loc;
+		this->clientId = clientId;
 	}
 
 	Bilet(double pret) : Bilet() {
@@ -310,13 +312,10 @@ public:
 	}
 
 	Bilet(const Bilet& bilet) {
-		char* titluFilm = new char[strlen(bilet.titluFilm) + 1];
-		strcpy(titluFilm, bilet.titluFilm);
-		this->titluFilm = titluFilm;
-
 		this->pret = bilet.pret;
 		this->rulareId = bilet.rulareId;
 		this->loc = bilet.loc;
+		this->clientId = bilet.clientId;
 	}
 
 	~Bilet() {
@@ -337,6 +336,14 @@ public:
 
 	int getId() {
 		return id;
+	}
+
+	int getClientId() {
+		return clientId;
+	}
+
+	int getRulareId() {
+		return rulareId;
 	}
 
 	void setTitluFilm(char* titluFilm) {
@@ -419,26 +426,27 @@ public:
 };
 
 ostream& operator<<(ostream& output, Bilet& bilet) {
-	output << "Titlu film: " << bilet.titluFilm << endl;
+	if (bilet.titluFilm != nullptr) {
+		output << "Titlu film: " << bilet.titluFilm << endl;
+	}
+	
 	output << "Pret: " << bilet.pret << endl;
+	output << "Loc: " << bilet.loc << endl;
 	output << "Id: " << bilet.id << endl;
+	output << "Rulare Id: " << bilet.rulareId << endl;
 	output << endl;
 	return output;
 }
 
 istream& operator>>(istream& input, Bilet& bilet) {
-	cout << "Titlu film: ";
-
-	char buffer[100];
-	input >> ws;
-	input.getline(buffer, 99);
-	bilet.titluFilm = new char[strlen(buffer) + 1];
-	strcpy_s(bilet.titluFilm, strlen(buffer) + 1, buffer);
-
 	cout << "Pret:";
 	input >> bilet.pret;
+
 	cout << "Rulare id:";
 	input >> bilet.rulareId;
+
+	cout << "Client id:";
+	input >> bilet.clientId;
 
 	cout << endl;
 
@@ -625,6 +633,10 @@ public:
 
 	int getId() {
 		return id;
+	}
+
+	int getNrLocuri() {
+		return nrLocuri;
 	}
 
 	void ocupaLoc() {
@@ -843,7 +855,7 @@ private:
 	const int id = nrRulari;
 	static int nrRulari;
 
-	int data = 0;
+	time_t data = time(0);
 	int filmId = 0;
 	int salaId = 0;
 
@@ -874,13 +886,22 @@ public:
 		return id;
 	}
 
-	void setData(int data) {
+	void setData(time_t data) {
 		this->data = data;
 	}
 
 	void setFilmId(int filmId) {
 		this->filmId = filmId;
 	}
+
+	int getFilmId() {
+		return filmId;
+	}
+
+	int getSalaId() {
+		return salaId;
+	}
+
 
 	void setSalaId(int salaId) {
 		this->salaId = salaId;
@@ -899,7 +920,7 @@ public:
 	}
 
 	operator int () {
-		return data;
+		return id;
 	}
 
 	bool operator!() {
@@ -925,18 +946,22 @@ public:
 };
 
 ostream& operator<<(ostream& output, Rulare& rulare) {
-	output << "film id: " << rulare.filmId << endl;
-	output << "data: " << rulare.data << endl;
-	output << "sala id: " << rulare.salaId << endl;
+	output << "Film id: " << rulare.filmId << endl;
+	output << "Data: " << ctime(&rulare.data) << endl;
+	output << "Sala id: " << rulare.salaId << endl;
 	return output;
 }
 
 istream& operator>>(istream& input, Rulare& rulare) {
-	cout << "data:";
-	input >> rulare.data;
-	cout << "film id:";
+	string timestamp;
+	cout << "Data timestamp:";
+	input >> timestamp;
+
+	rulare.data = (time_t)strtol(timestamp.c_str(), NULL, 10);
+	
+	cout << "Film id:";
 	input >> rulare.filmId;
-	cout << "sala id:";
+	cout << "Sala id:";
 	input >> rulare.salaId;
 
 	cout << endl;
@@ -960,26 +985,43 @@ private:
 	map<int, Sala> sali;
 	map<int, Angajat> angajati;
 	map<int, Rulare> rulari;
+	map<int, vector<int>> salaLocuriOcupate;
 
 public:
 	BazaDeDate() {
 
 	}
 
+
 	void afiseazaSituatieFilme() {
 		system("cls");
 
-		map<int, Film>::iterator it;
-
-		for (it = filme.begin(); it != filme.end(); it++)
-		{
-			cout << it->second;
-			cout << endl;
+		if (rulari.empty()) {
+			cout << "Nu exista rulari!" << endl;
+			int i;
+			cout << "Apasa 0 pt meniu" << endl;
+			cin >> i;
 		}
+		else {
+			map<int, Rulare>::iterator it;
 
-		int i;
-		cout << "Apasa 0 pt meniu" << endl;
-		cin >> i;
+			for (it = rulari.begin(); it != rulari.end(); it++)
+			{
+				int filmId = it->second.getFilmId();
+				int salaId = it->second.getSalaId();
+
+				if (filme.find(filmId) != filme.end() && sali.find(salaId) != sali.end()) {
+					cout << it->second;
+					cout << filme[filmId];
+					cout << sali[salaId];
+					cout << endl;
+				}
+			}
+
+			int i;
+			cout << "Apasa 0 pt meniu" << endl;
+			cin >> i;
+		}
 
 		//Film::deserialize("filme.bin");
 	}
@@ -1007,6 +1049,8 @@ public:
 	}
 
 	void stergeFilm() {
+		system("cls");
+
 		int filmId;
 		cout << "Id film";
 		cin >> filmId;
@@ -1118,6 +1162,31 @@ public:
 		}
 	}
 
+	void afiseazaFilm() {
+		system("cls");
+
+		int filmId;
+		cout << "Id film";
+		cin >> filmId;
+
+		if (filme.find(filmId) == filme.end()) {
+			cout << "Nu exista film!" << endl;
+
+			int i;
+			cout << "Apasa 0 pt meniu!" << endl;
+			cin >> i;
+
+			return;
+		}
+
+		Film film = filme[filmId];
+		cout << film;
+
+		int i;
+		cout << "Apasa 0 pt meniu!" << endl;
+		cin >> i;
+	}
+
 	//operatii bilet
 	void adaugaBilet() {
 		system("cls");
@@ -1125,22 +1194,65 @@ public:
 		Bilet bilet;
 		cin >> bilet;
 
-		bilete.insert(pair<int, Bilet>(bilet.getId(), bilet));
+		if (clienti.find(bilet.getClientId()) == clienti.end()) {
+			cout << "Nu exista client!" << endl;
+			int i;
+			cout << "Apasa 0 pt meniu" << endl;
+			cin >> i;
+		}
+		else {
+			if (rulari.find(bilet.getRulareId()) == rulari.end()) {
+				cout << "Nu exista rulare!" << endl;
+				int i;
+				cout << "Apasa 0 pt meniu" << endl;
+				cin >> i;
+			}
+			else {
+				//verifica daca exista loc
+				Rulare rulare = rulari[bilet.getRulareId()];
+				Sala sala = sali[rulare.getSalaId()];
 
-		system("cls");
-		int i;
-		cout << bilet << endl;
-		cout << "Bilet adaugat! Apasa 0 pt a continua" << endl;
-		cin >> i;
+				if (sala.getNrLocuri() > salaLocuriOcupate[sala.getId()].size()) {
+					int loc = salaLocuriOcupate[sala.getId()].size() + 1;
+					bilet.setLoc(loc);
+					salaLocuriOcupate[sala.getId()].push_back(loc);
 
+					bilete.insert(pair<int, Bilet>(bilet.getId(), bilet));
+
+					ofstream f;
+					f.open(bilet.getId() + ".txt", ios::app);
+					f.write((char*)& bilet, sizeof(bilet));
+
+					system("cls");
+					int i;
+					cout << bilet << endl;
+					cout << "Bilet adaugat! Apasa 0 pt a continua" << endl;
+					cin >> i;
+				}
+				else {
+					// nu mai sunt locuri
+					cout << "Nu exista locuri!" << endl;
+					int i;
+					cout << "Apasa 0 pt meniu" << endl;
+					cin >> i;
+				}
+			}
+			
+		}
 	}
 
 	void stergeBilet() {
+		system("cls");
+
 		int biletId;
 		cout << "Id bilet:";
 		cin >> biletId;
 
 		bilete.erase(biletId);
+
+		int i;
+		cout << "Bilet sters! Apasa 0 pt meniu!" << endl;
+		cin >> i;
 	}
 
 	void editeazaBilet(int optiune) {
@@ -1180,6 +1292,31 @@ public:
 		}
 	}
 
+	void afiseazaBilet() {
+		system("cls");
+
+		int biletId;
+		cout << "Id bilet";
+		cin >> biletId;
+
+		if (bilete.find(biletId) == bilete.end()) {
+			cout << "Nu exista bilet!" << endl;
+
+			int i;
+			cout << "Apasa 0 pt meniu!" << endl;
+			cin >> i;
+
+			return;
+		}
+
+		Bilet bilet = bilete[biletId];
+		cout << bilet;
+
+		int i;
+		cout << "Apasa 0 pt meniu!" << endl;
+		cin >> i;
+	}
+
 	//operatii sala
 	void adaugaSala() {
 		system("cls");
@@ -1197,11 +1334,17 @@ public:
 	}
 
 	void stergeSala() {
+		system("cls");
+
 		int salaId;
 		cout << "Id sala:";
 		cin >> salaId;
 
 		sali.erase(salaId);
+
+		int i;
+		cout << "Sala stearsa! Apasa 0 pt meniu!" << endl;
+		cin >> i;
 	}
 
 	void editeazaSala(int optiune) {
@@ -1270,6 +1413,31 @@ public:
 		}
 	}
 
+	void afiseazaSala() {
+		system("cls");
+
+		int salaId;
+		cout << "Id sala";
+		cin >> salaId;
+
+		if (sali.find(salaId) == sali.end()) {
+			cout << "Nu exista sala!" << endl;
+
+			int i;
+			cout << "Apasa 0 pt meniu!" << endl;
+			cin >> i;
+
+			return;
+		}
+
+		Sala sala = sali[salaId];
+		cout << sala;
+
+		int i;
+		cout << "Apasa 0 pt meniu!" << endl;
+		cin >> i;
+	}
+
 	//operatii client
 	void adaugaClient() {
 		system("cls");
@@ -1287,15 +1455,20 @@ public:
 	}
 
 	void stergeClient() {
+		system("cls");
+
 		int clientId;
 		cout << "Id client:";
 		cin >> clientId;
 
 		clienti.erase(clientId);
+
+		int i;
+		cout << "Client sters! Apasa 0 pt meniu!" << endl;
+		cin >> i;
 	}
 
 	void editeazaClient(int optiune) {
-		
 		switch (optiune)
 		{
 		case 1: {
@@ -1330,6 +1503,31 @@ public:
 		}
 	}
 
+	void afiseazaClient() {
+		system("cls");
+
+		int salaId;
+		cout << "Id sala";
+		cin >> salaId;
+
+		if (sali.find(salaId) == sali.end()) {
+			cout << "Nu exista sala!" << endl;
+
+			int i;
+			cout << "Apasa 0 pt meniu!" << endl;
+			cin >> i;
+
+			return;
+		}
+
+		Sala sala = sali[salaId];
+		cout << sala;
+
+		int i;
+		cout << "Apasa 0 pt meniu!" << endl;
+		cin >> i;
+	}
+
 	//operatii angajat
 	void adaugaAngajat() {
 		system("cls");
@@ -1347,10 +1545,16 @@ public:
 	}
 
 	void stergeAngajat() {
+		system("cls");
+
 		int angajatId;
 		cout << "Id angajat:";
 		cin >> angajatId;
 		angajati.erase(angajatId);
+
+		int i;
+		cout << "Angajat sters! Apasa 0 pt meniu!" << endl;
+		cin >> i;
 	}
 
 	void editeazaAngajat(int optiune) {
@@ -1417,6 +1621,31 @@ public:
 		}
 	}
 
+	void afiseazaAngajat() {
+		system("cls");
+
+		int angajatId;
+		cout << "Id angajat:";
+		cin >> angajatId;
+
+		if (angajati.find(angajatId) == angajati.end()) {
+			cout << "Nu exista angajat!" << endl;
+
+			int i;
+			cout << "Apasa 0 pt meniu!" << endl;
+			cin >> i;
+
+			return;
+		}
+
+		Angajat angajat = angajati[angajatId];
+		cout << angajat;
+
+		int i;
+		cout << "Apasa 0 pt meniu!" << endl;
+		cin >> i;
+	}
+
 	//operatii rulare
 	void adaugaRulare() {
 		system("cls");
@@ -1434,16 +1663,20 @@ public:
 	}
 
 	void stergeRulare() {
+		system("cls");
+
 		int rulareId;
 		cout << "Id rulare:";
 		cin >> rulareId;
 
 		rulari.erase(rulareId);
+
+		int i;
+		cout << "Rulare stearsa! Apasa 0 pt meniu!" << endl;
+		cin >> i;
 	}
 
 	void editeazaRulare(int optiune) {
-		
-
 		switch (optiune)
 		{
 		case 1: {
@@ -1533,6 +1766,31 @@ public:
 			break;
 		}
 	}
+
+	void afiseazaRulare() {
+		system("cls");
+
+		int rulareId;
+		cout << "Id rulare:";
+		cin >> rulareId;
+
+		if (rulari.find(rulareId) == rulari.end()) {
+			cout << "Nu exista rulare!" << endl;
+
+			int i;
+			cout << "Apasa 0 pt meniu!" << endl;
+			cin >> i;
+
+			return;
+		}
+
+		Rulare rulare = rulari[rulareId];
+		cout << rulare;
+
+		int i;
+		cout << "Apasa 0 pt meniu!" << endl;
+		cin >> i;
+	}
 };
 
 int afiseazaMeniu() {
@@ -1546,7 +1804,7 @@ int afiseazaMeniu() {
 	cout << "5: Optiuni film" << endl;
 	cout << "6: Optiuni client" << endl;
 	cout << "7: Optiuni sala" << endl;
-	cout << "8: Optiuni anagajat" << endl;
+	cout << "8: Optiuni angajat" << endl;
 	cout << "9: Optiuni rulare" << endl;
 
 	int val;
@@ -1733,6 +1991,14 @@ int main()
 
 		switch (optiuneMeniu)
 		{
+		case 1: {
+			bd.adaugaBilet();
+			break;
+		}
+		case 2: {
+			bd.afiseazaSituatieLocuriLibere();
+			break;
+		}
 		case 3: {
 			bd.afiseazaSituatieFilme();
 			break;

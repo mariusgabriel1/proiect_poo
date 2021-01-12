@@ -1,5 +1,5 @@
 ﻿  proiect.cpp
 C:\Users\PC\Desktop\fac an 2\poo\proiect\proiect\proiect.cpp(806,26): warning C4244:  'argument': conversion from 'double' to 'int', possible loss of data
 C:\Users\PC\Desktop\fac an 2\poo\proiect\proiect\proiect.cpp(915,14): warning C4244:  'return': conversion from 'time_t' to 'int', possible loss of data
-C:\Users\PC\Desktop\fac an 2\poo\proiect\proiect\proiect.cpp(1215,28): warning C4018:  '>': signed/unsigned mismatch
+C:\Users\PC\Desktop\fac an 2\poo\proiect\proiect\proiect.cpp(1244,28): warning C4018:  '>': signed/unsigned mismatch
   proiect.vcxproj -> C:\Users\PC\Desktop\fac an 2\poo\proiect\proiect\Debug\proiect.exe

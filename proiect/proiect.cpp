@@ -947,8 +947,9 @@ public:
 
 ostream& operator<<(ostream& output, Rulare& rulare) {
 	output << "Film id: " << rulare.filmId << endl;
-	output << "Data: " << ctime(&rulare.data) << endl;
+	output << "Data: " << ctime(&rulare.data);
 	output << "Sala id: " << rulare.salaId << endl;
+	output << "Rulare id: " << rulare.id << endl;
 	return output;
 }
 
@@ -986,6 +987,7 @@ private:
 	map<int, Angajat> angajati;
 	map<int, Rulare> rulari;
 	map<int, vector<int>> salaLocuriOcupate;
+	map<int, vector<Bilet>> rulareBilete;
 
 public:
 	BazaDeDate() {
@@ -1011,9 +1013,9 @@ public:
 				int salaId = it->second.getSalaId();
 
 				if (filme.find(filmId) != filme.end() && sali.find(salaId) != sali.end()) {
-					cout << it->second;
-					cout << filme[filmId];
-					cout << sali[salaId];
+					cout << "Rulare:" << endl << it->second;
+					cout << "Film:" << endl << filme[filmId];
+					cout << "Sala:" << endl << sali[salaId];
 					cout << endl;
 				}
 			}
@@ -1027,7 +1029,34 @@ public:
 	}
 
 	void afiseazaSituatieLocuriLibere() {
+		system("cls");
 
+		if (rulari.empty()) {
+			int i;
+			cout << "Nu exista rulari! Apasa 0 pt meniu" << endl;
+			cin >> i;
+		}
+		else {
+			map<int, Rulare>::iterator it1;
+
+			for (it1 = rulari.begin(); it1 != rulari.end(); it1++)
+			{
+				int salaId = it1->second.getSalaId();
+				int rulareId = it1->second.getId();
+
+				Sala sala = sali[salaId];
+
+				int nrbilete = rulareBilete[rulareId].size();
+
+				cout << it1->second;
+				cout << "Mai sunt " << sala.getNrLocuri() - nrbilete << " locuri libere la aceasta rulare!" << endl;
+			}
+
+			int i;
+			cout << "Apasa 0 pt meniu" << endl;
+			cin >> i;
+		}
+		
 	}
 
 	//operatii film
@@ -1216,6 +1245,7 @@ public:
 					int loc = salaLocuriOcupate[sala.getId()].size() + 1;
 					bilet.setLoc(loc);
 					salaLocuriOcupate[sala.getId()].push_back(loc);
+					rulareBilete[rulare.getId()].push_back(bilet);
 
 					bilete.insert(pair<int, Bilet>(bilet.getId(), bilet));
 
@@ -1791,6 +1821,63 @@ public:
 		cout << "Apasa 0 pt meniu!" << endl;
 		cin >> i;
 	}
+
+	//debug
+	void populeazaBazaDeDate() {
+		int* oreRulare = new int[2];
+		oreRulare[0] = 13;
+		oreRulare[1] = 15;
+
+		char* titlu1 = new char[6];
+		strcpy(titlu1, "Film1");
+		char* titlu2 = new char[6];
+		strcpy(titlu2, "Film2");
+
+		Film film1 = Film(titlu1, oreRulare, 2, 120);
+		Film film2 = Film(titlu2, oreRulare, 2, 120);
+
+		filme[film1.getId()] = film1;
+		filme[film2.getId()] = film2;
+
+		char* nume1 = new char[7];
+		strcpy(nume1, "Andrei");
+		char* nume2 = new char[8];
+		strcpy(nume2, "Gabriel");
+
+		Angajat angajat1 = Angajat(nume1, 1500);
+		Angajat angajat2 = Angajat(nume2, 2000);
+
+		angajati[angajat1.getId()] = angajat1;
+		angajati[angajat2.getId()] = angajat2;
+
+		nume1 = new char[4];
+		strcpy(nume1, "Ion");
+		nume2 = new char[7];
+		strcpy(nume2, "Bogdan");
+
+		Client client1 = Client(nume1);
+		Client client2 = Client(nume2);
+
+		clienti[client1.getId()] = client1;
+		clienti[client2.getId()] = client2;
+
+		titlu1 = new char[2];
+		strcpy(titlu1, "A");
+		titlu2 = new char[2];
+		strcpy(titlu2, "B");
+
+		Sala sala1 = Sala(titlu1,200);
+		Sala sala2 = Sala(titlu2,150);
+
+		sali[sala1.getId()] = sala1;
+		sali[sala2.getId()] = sala2;
+
+		Rulare rulare1 = Rulare(31233, 1, 1);
+		Rulare rulare2 = Rulare(31343, 2, 2);
+
+		rulari[rulare1.getId()] = rulare1;
+		rulari[rulare2.getId()] = rulare2;
+	}
 };
 
 int afiseazaMeniu() {
@@ -1983,6 +2070,7 @@ int afiseazaOptiuniEditareRulare() {
 int main()
 {
 	BazaDeDate bd;
+	bd.populeazaBazaDeDate();
 
 	int optiuneMeniu;
 	do

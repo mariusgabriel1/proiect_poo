@@ -26,17 +26,22 @@ public:
 	}
 
 	Film(char* titlu, int* oreRulare, int nrOreRulare, int durata) : Film() {
-		char* copieTitlu = new char[strlen(titlu) + 1];
-		strcpy_s(copieTitlu, strlen(titlu) + 1, titlu);
-		this->titlu = copieTitlu;
-		
-		int* copieOreRulare = new int[nrOreRulare];
-		for (int i = 0; i < nrOreRulare; i++)
-		{
-			copieOreRulare[i] = oreRulare[i];
+		if (titlu != nullptr) {
+			char* copieTitlu = new char[strlen(titlu) + 1];
+			strcpy_s(copieTitlu, strlen(titlu) + 1, titlu);
+			this->titlu = copieTitlu;
 		}
+		
+		if (oreRulare != nullptr) {
+			int* copieOreRulare = new int[nrOreRulare];
+			for (int i = 0; i < nrOreRulare; i++)
+			{
+				copieOreRulare[i] = oreRulare[i];
+			}
 
-		this->oreRulare = copieOreRulare;
+			this->oreRulare = copieOreRulare;
+		}
+		
 		this->nrOreRulare = nrOreRulare;
 		this->durata = durata;
 	}
@@ -53,15 +58,18 @@ public:
 			this->titlu = titlu;
 		}
 		
-
-		int* copieOreRulare = new int[film.nrOreRulare];
-		for (int i = 0; i < film.nrOreRulare; i++)
-		{
-			copieOreRulare[i] = film.oreRulare[i];
+		if (film.oreRulare != nullptr) {
+			int* copieOreRulare = new int[film.nrOreRulare];
+			for (int i = 0; i < film.nrOreRulare; i++)
+			{
+				copieOreRulare[i] = film.oreRulare[i];
+			}
+			this->oreRulare = copieOreRulare;
 		}
+		
 
-		this->oreRulare = copieOreRulare;
 		this->nrOreRulare = film.nrOreRulare;
+		this->durata = film.durata;
 	}
 
 	Film& operator=(const Film& film)
@@ -90,6 +98,10 @@ public:
 	}
 
 	void setOreRulare(int nrOreRulare, int* oreRulare) {
+		if (oreRulare == nullptr) {
+			return;
+		}
+
 		this->nrOreRulare = nrOreRulare;
 
 		int* copieOreRulare = new int[nrOreRulare];
@@ -102,12 +114,20 @@ public:
 	}
 
 	char* getTitlu() {
+		if (titlu == nullptr) {
+			return nullptr;
+		}
+
 		char* titlu = new char[strlen(this->titlu) + 1];
 		strcpy_s(titlu, strlen(this->titlu) + 1, this->titlu);
 		return titlu;
 	}
 
 	int* getOreRulare() {
+		if (oreRulare == nullptr) {
+			return nullptr;
+		}
+
 		int* copieOreRulare = new int[nrOreRulare];
 		for (int i = 0; i < nrOreRulare; i++)
 		{
@@ -140,6 +160,10 @@ public:
 	}
 
 	operator char*() {
+		if (titlu == nullptr) {
+			return nullptr;
+		}
+
 		char* titlu = new char[strlen(this->titlu) + 1];
 		strcpy(titlu, this->titlu);
 		return titlu;
@@ -162,7 +186,7 @@ public:
 
 		int nrCaractere = strlen(titlu);
 		f.write((char*)& nrCaractere, sizeof(nrCaractere));
-		//f.write(titlu, nrCaractere + 1);
+		f.write(titlu, nrCaractere + 1);
 
 		f.close();
 	}
@@ -174,11 +198,7 @@ public:
 		if (f.is_open()) {
 			vector<Film> filme;
 
-			while (true) {
-				if (f.eof()) {
-					break;
-				}
-
+			while (!f.eof()) {
 				int size = 0;
 
 				Film film;
@@ -291,9 +311,11 @@ public:
 
 
 	Bilet(char* titluFilm, double pret, int rulareId,int loc, int clientId) : Bilet() {
-		char* copieTitluFilm = new char[strlen(titluFilm) + 1];
-		strcpy(copieTitluFilm, titluFilm);
-		this->titluFilm = copieTitluFilm;
+		if (titluFilm != nullptr) {
+			char* copieTitluFilm = new char[strlen(titluFilm) + 1];
+			strcpy(copieTitluFilm, titluFilm);
+			this->titluFilm = copieTitluFilm;
+		}
 
 		this->pret = pret;
 		this->rulareId = rulareId;
@@ -316,6 +338,12 @@ public:
 		this->rulareId = bilet.rulareId;
 		this->loc = bilet.loc;
 		this->clientId = bilet.clientId;
+
+		if (bilet.titluFilm != nullptr) {
+			char* copieTitluFilm = new char[strlen(bilet.titluFilm) + 1];
+			strcpy(copieTitluFilm, bilet.titluFilm);
+			this->titluFilm = copieTitluFilm;
+		}
 	}
 
 	~Bilet() {
@@ -368,6 +396,10 @@ public:
 	}
 
 	operator char*() {
+		if (titluFilm == nullptr) {
+			return nullptr;
+		}
+
 		char* titluFilm = new char[strlen(this->titluFilm) + 1];
 		strcpy(titluFilm, this->titluFilm);
 		return titluFilm;
@@ -426,10 +458,7 @@ public:
 };
 
 ostream& operator<<(ostream& output, Bilet& bilet) {
-	if (bilet.titluFilm != nullptr) {
-		output << "Titlu film: " << bilet.titluFilm << endl;
-	}
-	
+	output << "Titlu film: " << bilet.titluFilm << endl;
 	output << "Pret: " << bilet.pret << endl;
 	output << "Loc: " << bilet.loc << endl;
 	output << "Id: " << bilet.id << endl;
@@ -467,7 +496,11 @@ public:
 	}
 
 	Client(char* nume) : Client() {
-		this->nume = nume;
+		if (nume != nullptr) {
+			char* copienume = new char[strlen(nume) + 1];
+			strcpy(copienume, nume);
+			this->nume = copienume;
+		}
 	}
 
 	~Client() {
@@ -475,9 +508,12 @@ public:
 	}
 
 	Client(const Client& client) {
-		char* nume = new char[strlen(client.nume) + 1];
-		strcpy(nume, client.nume);
-		this->nume = nume;
+		if (client.nume != nullptr) {
+			char* nume = new char[strlen(client.nume) + 1];
+			strcpy(nume, client.nume);
+			this->nume = nume;
+		}
+		
 	}
 
 	Client& operator=(const Client& client)
@@ -491,6 +527,10 @@ public:
 	}
 
 	void setNume(char* nume) {
+		if (nume == nullptr) {
+			return;
+		}
+
 		char* copieNume = new char[strlen(nume) + 1];
 		strcpy(copieNume, nume);
 		this->nume = copieNume;
@@ -501,6 +541,10 @@ public:
 	}
 
 	char* operator[](int index) {
+		if (nume == nullptr) {
+			return nullptr;
+		}
+
 		char* nume = new char[strlen(this->nume) + 1];
 		strcpy(nume, this->nume);
 		return nume;
@@ -511,6 +555,10 @@ public:
 	}
 
 	operator char*() {
+		if (nume == nullptr) {
+			return nullptr;
+		}
+
 		char* nume = new char[strlen(this->nume) + 1];
 		strcpy(nume, this->nume);
 		return nume;
@@ -644,6 +692,10 @@ public:
 	}
 
 	void setNume(char* nume) {
+		if (nume == nullptr) {
+			return;
+		}
+
 		char* copieNume = new char[strlen(nume) + 1];
 		strcpy(copieNume, nume);
 		this->nume = copieNume;
@@ -670,6 +722,10 @@ public:
 	}
 
 	operator char*() {
+		if (nume == nullptr) {
+			return nullptr;
+		}
+
 		char* nume = new char[strlen(this->nume) + 1];
 		strcpy(nume, this->nume);
 		return nume;
@@ -741,9 +797,12 @@ public:
 	}
 
 	Angajat(char* nume, int salariu) : Angajat() {
-		char* copieNume = new char[strlen(nume) + 1];
-		strcpy(copieNume, nume);
-		this->nume = copieNume;
+		if (nume != nullptr) {
+			char* copieNume = new char[strlen(nume) + 1];
+			strcpy(copieNume, nume);
+			this->nume = copieNume;
+		}
+		
 
 		this->salariu = salariu;
 	}
@@ -753,9 +812,12 @@ public:
 	}
 
 	Angajat(const Angajat& angajat) {
-		char* copieNume = new char[strlen(angajat.nume) + 1];
-		strcpy(copieNume, angajat.nume);
-		this->nume = copieNume;
+		if (angajat.nume != nullptr) {
+			char* copieNume = new char[strlen(angajat.nume) + 1];
+			strcpy(copieNume, angajat.nume);
+			this->nume = copieNume;
+		}
+		
 	}
 
 	Angajat& operator=(const Angajat& angajat)
@@ -773,6 +835,9 @@ public:
 	}
 
 	void setNume(char* nume) {
+		if (nume == nullptr) {
+			return;
+		}
 		char* copieNume = new char[strlen(nume) + 1];
 		strcpy(copieNume, nume);
 		this->nume = copieNume;
@@ -787,12 +852,19 @@ public:
 	}
 
 	char* operator[](int index) {
+		if (nume == nullptr) {
+			return nullptr;
+		}
 		char* copieNume = new char[strlen(nume) + 1];
 		strcpy(copieNume, nume);
 		return copieNume;
 	}
 
 	operator char*() {
+		if (nume == nullptr) {
+			return nullptr;
+		}
+
 		char* nume = new char[strlen(this->nume) + 1];
 		strcpy(nume, this->nume);
 		return nume;

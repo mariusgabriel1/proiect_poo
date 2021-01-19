@@ -481,6 +481,13 @@ istream& operator>>(istream& input, Bilet& bilet) {
 	cout << "Client id:";
 	input >> bilet.clientId;
 
+	cout << "Titlu film:";
+	char buffer[100];
+	input >> ws;
+	input.getline(buffer, 99);
+	bilet.titluFilm = new char[strlen(buffer) + 1];
+	strcpy_s(bilet.titluFilm, strlen(buffer) + 1, buffer);
+
 	cout << endl;
 
 	return input;
@@ -1432,7 +1439,8 @@ public:
 		Film film = filme[filmId];
 		cout << film;
 
-		Film::deserialize(filmId);
+		cout << endl << "Fisier: " << endl;
+		cout << Film::deserialize(filmId);
 
 		int i;
 		cout << "Apasa 0 pt meniu!" << endl;
@@ -1576,6 +1584,9 @@ public:
 
 		Bilet bilet = bilete[biletId];
 		cout << bilet;
+
+		cout << endl << "Fisier: " << endl;
+		cout << Bilet::deserialize(biletId);
 
 		int i;
 		cout << "Apasa 0 pt meniu!" << endl;
@@ -1724,6 +1735,9 @@ public:
 		Sala sala = sali[salaId];
 		cout << sala;
 
+		cout << endl << "Fisier: " << endl;
+		cout << Sala::deserialize(salaId);
+
 		int i;
 		cout << "Apasa 0 pt meniu!" << endl;
 		cin >> i;
@@ -1830,6 +1844,9 @@ public:
 
 		Sala sala = sali[salaId];
 		cout << sala;
+
+		cout << endl << "Fisier: " << endl;
+		cout << Sala::deserialize(salaId);
 
 		int i;
 		cout << "Apasa 0 pt meniu!" << endl;
@@ -1974,6 +1991,9 @@ public:
 
 		Angajat angajat = angajati[angajatId];
 		cout << angajat;
+
+		cout << endl << "Fisier: " << endl;
+		cout << Angajat::deserialize(angajatId);
 
 		int i;
 		cout << "Apasa 0 pt meniu!" << endl;
@@ -2155,6 +2175,9 @@ public:
 
 		Rulare rulare = rulari[rulareId];
 		cout << rulare;
+
+		cout << endl << "Fisier: " << endl;
+		cout << Rulare::deserialize(rulareId);
 
 		int i;
 		cout << "Apasa 0 pt meniu!" << endl;

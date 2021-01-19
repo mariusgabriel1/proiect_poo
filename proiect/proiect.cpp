@@ -2360,7 +2360,7 @@ int main()
 			}
 
 			case 4: {
-				bd.afiseazaAngajat();
+				bd.afiseazaRulare();
 				break;
 			}
 				

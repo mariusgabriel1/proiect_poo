@@ -1153,7 +1153,7 @@ public:
 		system("cls");
 
 		int filmId;
-		cout << "Id film";
+		cout << "Id film: ";
 		cin >> filmId;
 		filme.erase(filmId);
 	}
@@ -1165,7 +1165,7 @@ public:
 		{
 		case 1: {
 			int filmId;
-			cout << "Id film";
+			cout << "Id film: ";
 			cin >> filmId;
 
 			if (filme.find(filmId) == filme.end()) {
@@ -1193,7 +1193,7 @@ public:
 
 		case 2: {
 			int filmId;
-			cout << "Id film";
+			cout << "Id film: ";
 			cin >> filmId;
 
 			if (filme.find(filmId) == filme.end()) {
@@ -1221,7 +1221,7 @@ public:
 
 		case 3: {
 			int filmId;
-			cout << "Id film";
+			cout << "Id film: ";
 			cin >> filmId;
 
 			if (filme.find(filmId) == filme.end()) {
@@ -1267,7 +1267,7 @@ public:
 		system("cls");
 
 		int filmId;
-		cout << "Id film";
+		cout << "Id film: ";
 		cin >> filmId;
 
 		if (filme.find(filmId) == filme.end()) {
@@ -1347,7 +1347,7 @@ public:
 		system("cls");
 
 		int biletId;
-		cout << "Id bilet:";
+		cout << "Id bilet: ";
 		cin >> biletId;
 
 		bilete.erase(biletId);
@@ -1364,7 +1364,7 @@ public:
 		{
 		case 1: {
 			int biletId;
-			cout << "Id bilet:";
+			cout << "Id bilet: ";
 			cin >> biletId;
 
 			if (bilete.find(biletId) == bilete.end()) {
@@ -1398,7 +1398,7 @@ public:
 		system("cls");
 
 		int biletId;
-		cout << "Id bilet";
+		cout << "Id bilet: ";
 		cin >> biletId;
 
 		if (bilete.find(biletId) == bilete.end()) {
@@ -1439,7 +1439,7 @@ public:
 		system("cls");
 
 		int salaId;
-		cout << "Id sala:";
+		cout << "Id sala: ";
 		cin >> salaId;
 
 		sali.erase(salaId);
@@ -1455,7 +1455,7 @@ public:
 		{
 		case 1: {
 			int salaId;
-			cout << "Id sala:";
+			cout << "Id sala: ";
 			cin >> salaId;
 
 			if (sali.find(salaId) == sali.end()) {
@@ -1484,7 +1484,7 @@ public:
 
 		case 2: {
 			int salaId;
-			cout << "Id sala:";
+			cout << "Id sala: ";
 			cin >> salaId;
 
 			if (sali.find(salaId) == sali.end()) {
@@ -1519,7 +1519,7 @@ public:
 		system("cls");
 
 		int salaId;
-		cout << "Id sala";
+		cout << "Id sala: ";
 		cin >> salaId;
 
 		if (sali.find(salaId) == sali.end()) {
@@ -1560,7 +1560,7 @@ public:
 		system("cls");
 
 		int clientId;
-		cout << "Id client:";
+		cout << "Id client: ";
 		cin >> clientId;
 
 		clienti.erase(clientId);
@@ -1575,7 +1575,7 @@ public:
 		{
 		case 1: {
 			int clientId;
-			cout << "Id client:";
+			cout << "Id client: ";
 			cin >> clientId;
 
 			if (clienti.find(clientId) == clienti.end()) {
@@ -1609,7 +1609,7 @@ public:
 		system("cls");
 
 		int salaId;
-		cout << "Id sala";
+		cout << "Id sala: ";
 		cin >> salaId;
 
 		if (sali.find(salaId) == sali.end()) {
@@ -1650,7 +1650,7 @@ public:
 		system("cls");
 
 		int angajatId;
-		cout << "Id angajat:";
+		cout << "Id angajat: ";
 		cin >> angajatId;
 		angajati.erase(angajatId);
 
@@ -1665,7 +1665,7 @@ public:
 		{
 		case 1: {
 			int angajatId;
-			cout << "Id angajat:";
+			cout << "Id angajat: ";
 			cin >> angajatId;
 
 			if (angajati.find(angajatId) == angajati.end()) {
@@ -1682,7 +1682,7 @@ public:
 
 			char nume[100];
 
-			cout << "Nume nou:" << endl;
+			cout << "Nume nou: " << endl;
 			cin.getline(nume, 100, '\n');
 
 			angajat.setNume(nume);
@@ -1693,7 +1693,7 @@ public:
 
 		case 2: {
 			int angajatId;
-			cout << "Id angajat:";
+			cout << "Id angajat: ";
 			cin >> angajatId;
 
 			if (angajati.find(angajatId) == angajati.end()) {
@@ -1710,7 +1710,7 @@ public:
 
 			double salariu;
 
-			cout << "Salariu nou:" << endl;
+			cout << "Salariu nou: " << endl;
 			cin >> salariu;
 
 			angajat.setSalariu(salariu);
@@ -1727,7 +1727,7 @@ public:
 		system("cls");
 
 		int angajatId;
-		cout << "Id angajat:";
+		cout << "Id angajat: ";
 		cin >> angajatId;
 
 		if (angajati.find(angajatId) == angajati.end()) {
@@ -1768,7 +1768,7 @@ public:
 		system("cls");
 
 		int rulareId;
-		cout << "Id rulare:";
+		cout << "Id rulare: ";
 		cin >> rulareId;
 
 		rulari.erase(rulareId);
@@ -1783,7 +1783,7 @@ public:
 		{
 		case 1: {
 			int rulareId;
-			cout << "Id rulare:";
+			cout << "Id rulare: ";
 			cin >> rulareId;
 
 			if (rulari.find(rulareId) == rulari.end()) {
@@ -1800,7 +1800,7 @@ public:
 
 			int dataRulare;
 
-			cout << "Data rulare noua:" << endl;
+			cout << "Data rulare noua: " << endl;
 			cin >> dataRulare;
 
 			rulare.setData(dataRulare);
@@ -1811,7 +1811,7 @@ public:
 
 		case 2: {
 			int rulareId;
-			cout << "Id rulare:";
+			cout << "Id rulare: ";
 			cin >> rulareId;
 
 			if (rulari.find(rulareId) == rulari.end()) {
@@ -1828,7 +1828,7 @@ public:
 
 			int filmId;
 
-			cout << "Film id nou:" << endl;
+			cout << "Film id nou: " << endl;
 			cin >> filmId;
 
 			rulare.setFilmId(filmId);
@@ -1839,7 +1839,7 @@ public:
 
 		case 3: {
 			int rulareId;
-			cout << "Id rulare:";
+			cout << "Id rulare: ";
 			cin >> rulareId;
 
 			if (rulari.find(rulareId) == rulari.end()) {
@@ -1856,7 +1856,7 @@ public:
 
 			int salaId;
 
-			cout << "Sala id noua:" << endl;
+			cout << "Sala id noua: " << endl;
 			cin >> salaId;
 
 			rulare.setSalaId(salaId);
@@ -1873,7 +1873,7 @@ public:
 		system("cls");
 
 		int rulareId;
-		cout << "Id rulare:";
+		cout << "Id rulare: ";
 		cin >> rulareId;
 
 		if (rulari.find(rulareId) == rulari.end()) {
@@ -2185,6 +2185,12 @@ int main()
 				bd.stergeBilet();
 				break;
 			}
+
+			case 4: {
+				bd.afiseazaBilet();
+				break;
+			}
+			
 				
 			default:
 				break;
@@ -2212,6 +2218,12 @@ int main()
 				
 			case 3: {
 				bd.stergeFilm();
+				break;
+			}
+
+
+			case 4: {
+				bd.afiseazaFilm();
 				break;
 			}
 				
@@ -2244,6 +2256,11 @@ int main()
 				bd.stergeClient();
 				break;
 			}
+
+			case 4: {
+				bd.afiseazaClient();
+				break;
+			}
 				
 			default:
 				break;
@@ -2271,6 +2288,11 @@ int main()
 				
 			case 3: {
 				bd.stergeSala();
+				break;
+			}
+
+			case 4: {
+				bd.afiseazaSala();
 				break;
 			}
 				
@@ -2302,6 +2324,11 @@ int main()
 				bd.stergeAngajat();
 				break;
 			}
+
+			case 4: {
+				bd.afiseazaAngajat();
+				break;
+			}
 				
 			default:
 				break;
@@ -2329,6 +2356,11 @@ int main()
 				
 			case 3: {
 				bd.stergeRulare();
+				break;
+			}
+
+			case 4: {
+				bd.afiseazaAngajat();
 				break;
 			}
 				
